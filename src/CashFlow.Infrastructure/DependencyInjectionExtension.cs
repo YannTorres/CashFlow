@@ -1,6 +1,8 @@
 ﻿using CashFlow.Domain.Repositories;
 using CashFlow.Domain.Repositories.Expenses;
+using CashFlow.Domain.Repositories.User;
 using CashFlow.Domain.Security.Cryptography;
+using CashFlow.Domain.Security.Tokens;
 using CashFlow.Infrastructure.DataAcess;
 using CashFlow.Infrastructure.DataAcess.Repositories;
 using CashFlow.Infrastructure.Security;
@@ -18,6 +20,7 @@ public static class DependencyInjectionExtension
         AddDbcContext(services, configuration);
 
         services.AddScoped<IPassworkEncripter, Security.BCrypt>();
+        services.AddScoped<IAcessTokenGenerator, JwtTokenGenerator>();
     }
 
     private static void AddRepositories(IServiceCollection services)
@@ -25,6 +28,8 @@ public static class DependencyInjectionExtension
         services.AddScoped<IExpensesReadOnlyRepository, ExpensesRepository>();
         services.AddScoped<IExpensesWriteOnlyRepository, ExpensesRepository>();
         services.AddScoped<IExpensesUpdateOnlyRepository, ExpensesRepository>();
+        services.AddScoped<IUserReadOnlyRepository, UserRepository>();
+        services.AddScoped<IUserWriteOnlyRepository, UserRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
     }
     private static void AddDbcContext(IServiceCollection services, IConfiguration configuration)
