@@ -13,7 +13,7 @@ public class HttpContextTokenValue : ITokenProvider
     {
         var authorization = _contextAccessor.HttpContext!.Request.Headers.Authorization.ToString();
 
-        return authorization.Substring(7, authorization.Length).Trim();
-        // return authorization["Bearer ".Lenght..].Trim();
+        //return authorization.Substring(7, authorization.Length - 1).Trim();
+        return authorization["Bearer ".Length..].Trim();
     }
 }

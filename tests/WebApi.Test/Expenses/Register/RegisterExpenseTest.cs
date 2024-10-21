@@ -7,17 +7,21 @@ using System.Text.Json;
 using WebApi.Test.InlineData;
 
 namespace WebApi.Test.Users.Register;
-public class RegisterUserTests : CashFlowClassFixture
+public class RegisterExpenseTest : CashFlowClassFixture
 {
-    private const string METHOD = "api/User";
-    public RegisterUserTests(CustomWebApplicationFactory webApplicationFactory) : base(webApplicationFactory) { }
+    private const string METHOD = "api/Expenses";
+    private readonly string _token;
+    public RegisterExpenseTest(CustomWebApplicationFactory webApplicationFactory) : base(webApplicationFactory)
+    {
+        _token = webApplicationFactory.GetToken();
+    }
 
     [Fact]
     public async Task Sucess()
     {
-        var request = RequestRegisterUserJsonBuilder.Build();
+        var request = RequestRegisterExpenseJsonBuilder.Build();
 
-        var result = await DoPost(METHOD, request);
+        var result = await DoPost(METHOD, request, _token);
 
         result.StatusCode.Should().Be(HttpStatusCode.Created);
 
@@ -25,18 +29,17 @@ public class RegisterUserTests : CashFlowClassFixture
 
         var response = await JsonDocument.ParseAsync(body);
 
-        response.RootElement.GetProperty("name").GetString().Should().Be(request.Name); // Passar a propriedade como camelCase
-        response.RootElement.GetProperty("token").GetString().Should().NotBeNullOrEmpty(); // Passar a propriedade como camelCase
+        response.RootElement.GetProperty("title").GetString().Should().Be(request.Title); 
     }
 
     [Theory]
     [ClassData(typeof(CultureInlineDataTest))]
-    public async Task Error_Empty_Name(string cultureInfo)
+    public async Task Error_Title_Empty(string cultureInfo)
     {
-        var request = RequestRegisterUserJsonBuilder.Build();
-        request.Name = string.Empty;
+        var request = RequestRegisterExpenseJsonBuilder.Build();
+        request.Title = string.Empty;
 
-        var result = await DoPost(METHOD, request, culture: cultureInfo);
+        var result = await DoPost(METHOD, request, _token, culture: cultureInfo);
 
         result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
@@ -46,7 +49,7 @@ public class RegisterUserTests : CashFlowClassFixture
 
         var errors = response.RootElement.GetProperty("errorMessages").EnumerateArray(); // Enumerate Array pois é o metodo para JSON.
 
-        var expectedMessage = ResourceErrorMessages.ResourceManager.GetString("NAME_EMPTY", new CultureInfo(cultureInfo));
+        var expectedMessage = ResourceErrorMessages.ResourceManager.GetString("TITLE_REQUIRED", new CultureInfo(cultureInfo));
 
         errors.Should().HaveCount(1).And.Contain(error => error.GetString()!.Equals(expectedMessage));
     }

@@ -1,26 +1,21 @@
-﻿using CashFlow.Exception;
+﻿using CashFlow.Communication.Requests;
+using CashFlow.Exception;
 using CommonTestUtilities.Requests;
+using FluentAssertions;
 using System.Globalization;
-using System.Net.Http.Json;
 using System.Net;
 using System.Text.Json;
 using WebApi.Test.InlineData;
-using FluentAssertions;
-using System.Net.Http.Headers;
-using CashFlow.Communication.Requests;
 
 namespace WebApi.Test.Login.DoLogin;
-public class DoLoginTest : IClassFixture<CustomWebApplicationFactory>
+public class DoLoginTest : CashFlowClassFixture
 {
     private const string METHOD = "api/Login";
     private readonly string _email;
     private readonly string _name;
     private readonly string _password;
-
-    private readonly HttpClient _httpClient;
-    public DoLoginTest(CustomWebApplicationFactory webApplicationFactory)
+    public DoLoginTest(CustomWebApplicationFactory webApplicationFactory) : base(webApplicationFactory)
     {
-        _httpClient = webApplicationFactory.CreateClient();
         _email = webApplicationFactory.GetEmail();
         _name = webApplicationFactory.GetName();
         _password = webApplicationFactory.GetPassword();
@@ -35,7 +30,7 @@ public class DoLoginTest : IClassFixture<CustomWebApplicationFactory>
             Password = _password
         };
 
-        var result = await _httpClient.PostAsJsonAsync(METHOD, request);
+        var result = await DoPost(METHOD, request);
 
         result.StatusCode.Should().Be(HttpStatusCode.OK);
 
@@ -53,8 +48,7 @@ public class DoLoginTest : IClassFixture<CustomWebApplicationFactory>
     {
         var request = RequestRegisterUserJsonBuilder.Build();
 
-        _httpClient.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue(cultureInfo));
-        var result = await _httpClient.PostAsJsonAsync(METHOD, request);
+        var result = await DoPost(METHOD, request, culture: cultureInfo);
 
         result.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
 

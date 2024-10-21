@@ -17,14 +17,14 @@ internal class ExpensesRepository : IExpensesReadOnlyRepository, IExpensesWriteO
         await _dbContext.Expenses.AddAsync(expense);
     }
 
-    public async Task<List<Expense>> GetAll()
+    public async Task<List<Expense>> GetAll(User user)
     {
-        return await _dbContext.Expenses.AsNoTracking().ToListAsync();
+        return await _dbContext.Expenses.AsNoTracking().Where(e => e.UserId.Equals(user.Id)).ToListAsync();
     }
 
-    async Task<Expense?> IExpensesReadOnlyRepository.GetById(long Id)
+    async Task<Expense?> IExpensesReadOnlyRepository.GetById(User user, long Id)
     {
-        return await _dbContext.Expenses.AsNoTracking().FirstOrDefaultAsync(e => e.Id.Equals(Id));
+        return await _dbContext.Expenses.AsNoTracking().FirstOrDefaultAsync(e => e.Id.Equals(Id) && e.UserId.Equals(user.Id));
     }
 
     async Task<Expense?> IExpensesUpdateOnlyRepository.GetById(long Id) // Função usada para o endpoint de PUT.
@@ -32,9 +32,9 @@ internal class ExpensesRepository : IExpensesReadOnlyRepository, IExpensesWriteO
         return await _dbContext.Expenses.FirstOrDefaultAsync(e => e.Id.Equals(Id)); // Não pode ter o AsNoTracking pois logo depois que pegamos os dados a gente faz a atualização deles.
     }
 
-    public async Task<bool> Delete(long id)
+    public async Task<bool> Delete(User user, long id)
     {
-        var result = await _dbContext.Expenses.FirstOrDefaultAsync(e => e.Id.Equals(id));
+        var result = await _dbContext.Expenses.FirstOrDefaultAsync(e => e.Id.Equals(id) && e.UserId.Equals(user.Id));
 
         if (result == null) 
             return false;
@@ -49,7 +49,7 @@ internal class ExpensesRepository : IExpensesReadOnlyRepository, IExpensesWriteO
         _dbContext.Expenses.Update(expense);
     }
 
-    public async Task<List<Expense>> FilterByMonth(DateOnly date)
+    public async Task<List<Expense>> FilterByMonth(User user, DateOnly date)
     {
         /* var startDate = new DateTime(year: date.Year, month: date.Month, day: 1).Date;
 
@@ -58,14 +58,14 @@ internal class ExpensesRepository : IExpensesReadOnlyRepository, IExpensesWriteO
 
          return await _dbContext.Expenses
             .AsNoTracking()
-            .Where(e => e.Date >= startDate && e.Date <= endDate)
+            .Where(e => e.Date.Month == date.Month && e.Date.Year == date.Year && e.UserId.Equals(user.Id))
             .OrderBy(e => e.Date)
             .ThenBy(e => e.Title)
             .ToListAsync(); */
 
         return await _dbContext.Expenses
             .AsNoTracking()
-            .Where(e => e.Date.Month == date.Month && e.Date.Year == date.Year)
+            .Where(e => e.Date.Month == date.Month && e.Date.Year == date.Year && e.UserId.Equals(user.Id))
             .OrderBy(e => e.Date)
             .ToListAsync();
     }

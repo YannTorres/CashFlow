@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CashFlow.Communication.Response;
 using CashFlow.Domain.Repositories.Expenses;
+using CashFlow.Domain.Services.LoggedUser;
 using CashFlow.Exception;
 using CashFlow.Exception.ExceptionBase;
 
@@ -9,14 +10,18 @@ public class GetExpenseByIdUseCase : IGetExpenseByIdUseCase
 {
     private readonly IMapper _mapper;
     private readonly IExpensesReadOnlyRepository _repository;
-    public GetExpenseByIdUseCase(IExpensesReadOnlyRepository repository, IMapper mapper)
+    private readonly ILoggedUser _loggedUser;
+    public GetExpenseByIdUseCase(IExpensesReadOnlyRepository repository, IMapper mapper, ILoggedUser loggedUser)
     {
         _mapper = mapper;
         _repository = repository;
+        _loggedUser = loggedUser;
     }
     public async Task<ResponseExpenseJson> Execute(long id)
     {
-        var result = await _repository.GetById(id);
+        var loggedUser = await _loggedUser.Get();
+
+        var result = await _repository.GetById(loggedUser, id);
 
         if (result == null)
         {

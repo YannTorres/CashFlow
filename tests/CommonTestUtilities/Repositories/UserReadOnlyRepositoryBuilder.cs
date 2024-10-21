@@ -19,7 +19,7 @@ public class UserReadOnlyRepositoryBuilder
     {
         _repository.Setup(userRepository => userRepository.GetUserByEmail(user.Email)).ReturnsAsync(user);
 
-        return this; // Neste caso estamos devovvendo a própria instancia da classe, que serve para chamar o Build após essa função.
+        return this; // Neste caso estamos devolvendo a própria instancia da classe, que serve para chamar o Build após essa função.
     }
 
     public IUserReadOnlyRepository Build() => _repository.Object;
