@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace WebApi.Test;
 public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 {
+    private Expense _expense;
     private User _user;
     private string _password;
     private string _token;
@@ -42,12 +43,10 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
     {
         return _user.Email;
     }
-
     public string GetName()
     {
         return _user.Name;
     }
-
     public string GetPassword()
     {
         return _password;
@@ -56,7 +55,10 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
     {
         return _token;
     }
-
+    public long GetExpenseId()
+    {
+        return _expense.Id;
+    }
 
     private void StartDatabase(CashFlowDbContext dbContext, IPasswordEncripter passwordEncrripter) 
     {
@@ -78,8 +80,8 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
     private void AddExpenses(CashFlowDbContext dbContext, User user)
     {
-        var expense = ExpenseBuilder.Build(user);
+        _expense = ExpenseBuilder.Build(user);
 
-        dbContext.Expenses.Add(expense);
+        dbContext.Expenses.Add(_expense);
     }
 }

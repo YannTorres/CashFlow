@@ -18,5 +18,13 @@ public class ExpensesReadOnlyRepositoryBuilder
         return this;
     }
 
+    public ExpensesReadOnlyRepositoryBuilder GetById(User user, Expense? expense)
+    {
+        if (expense != null)
+            _repository.Setup(repository => repository.GetById(user, expense.Id)).ReturnsAsync(expense);
+        // Forma de Leitura, Se o usecase (no caso nosso teste) passar corretamente um usuário para o GetAll, o mock vai retornar uma lista de Despesas (que também estamos passando).
+        return this;
+    }
+
     public IExpensesReadOnlyRepository Build() => _repository.Object;
 }
