@@ -10,7 +10,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace UseCases.Tests.Expenses.GetAll;
-public class GetExpensesByIdUseCaseTest
+public class GetAllExpensesUseCaseTest
 {
     [Fact]
     public async Task Sucess()
