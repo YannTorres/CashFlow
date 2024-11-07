@@ -14,4 +14,8 @@ public class ExpenseIdentityManager
     {
         return _expense.Id;
     }
+    public DateTime GetDate()
+    {
+        return _expense.Date;
+    }
 }
