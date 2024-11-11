@@ -143,6 +143,15 @@ namespace CashFlow.Exception {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The password you entered is different from the current password..
+        /// </summary>
+        public static string PASSWORD_DIFERENT_CURRENT_PASSWORD {
+            get {
+                return ResourceManager.GetString("PASSWORD_DIFERENT_CURRENT_PASSWORD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Payment Type is not valid..
         /// </summary>
         public static string PAYMENT_TYPE_REQUIRED {
