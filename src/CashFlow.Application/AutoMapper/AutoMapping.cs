@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CashFlow.Communication.Enums;
 using CashFlow.Communication.Requests;
 using CashFlow.Communication.Response;
 using CashFlow.Domain.Entities;
@@ -14,9 +15,19 @@ public class AutoMapping: Profile
 
     private void RequestToEntity()
     {
-        CreateMap<RequestExpenseJson, Expense>();
+        
         CreateMap<RequestRegisteredUserJson, User>()
             .ForMember(dest => dest.Password, config => config.Ignore());
+
+        CreateMap<RequestExpenseJson, Expense>()
+            .ForMember(dest => dest.Tags, config => 
+                config.MapFrom(source => source.Tags.Distinct()));
+        // Para não permitir que tags repetidas sejam adicionadas.
+
+        CreateMap<Communication.Enums.Tag, Domain.Entities.Tag>()
+            .ForMember(dest => dest.Value, config => 
+                config.MapFrom(source => source));
+        // Com esse código mapeamos de uma list de enum para list da entidade.
     }
     private void EntityToResponse()
     {
