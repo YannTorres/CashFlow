@@ -1,6 +1,7 @@
 ﻿using CashFlow.Domain.Entities;
 using CashFlow.Domain.Repositories.Expenses;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace CashFlow.Infrastructure.DataAcess.Repositories;
 internal class ExpensesRepository : IExpensesReadOnlyRepository, IExpensesWriteOnlyRepository, IExpensesUpdateOnlyRepository
@@ -24,12 +25,15 @@ internal class ExpensesRepository : IExpensesReadOnlyRepository, IExpensesWriteO
 
     async Task<Expense?> IExpensesReadOnlyRepository.GetById(User user, long Id)
     {
-        return await _dbContext.Expenses.AsNoTracking().FirstOrDefaultAsync(e => e.Id.Equals(Id) && e.UserId.Equals(user.Id));
+        return await GetFullExpense() 
+            .AsNoTracking()
+            .FirstOrDefaultAsync(e => e.Id.Equals(Id) && e.UserId.Equals(user.Id));
     }
 
     async Task<Expense?> IExpensesUpdateOnlyRepository.GetById(long Id) // Função usada para o endpoint de PUT.
     {
-        return await _dbContext.Expenses.FirstOrDefaultAsync(e => e.Id.Equals(Id)); // Não pode ter o AsNoTracking pois logo depois que pegamos os dados a gente faz a atualização deles.
+        return await GetFullExpense()
+            .FirstOrDefaultAsync(e => e.Id.Equals(Id)); // Não pode ter o AsNoTracking pois logo depois que pegamos os dados a gente faz a atualização deles.
     }
 
     public async Task<bool> Delete(User user, long id)
@@ -68,5 +72,11 @@ internal class ExpensesRepository : IExpensesReadOnlyRepository, IExpensesWriteO
             .Where(e => e.Date.Month == date.Month && e.Date.Year == date.Year && e.UserId.Equals(user.Id))
             .OrderBy(e => e.Date)
             .ToListAsync();
+    }
+
+    private IIncludableQueryable<Expense, ICollection<Tag>> GetFullExpense()
+    {
+        return _dbContext.Expenses
+            .Include(e => e.Tags); // Aqui estamos fazendo join na tabela de Tags.
     }
 }

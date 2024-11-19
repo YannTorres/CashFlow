@@ -31,9 +31,14 @@ public class AutoMapping: Profile
     }
     private void EntityToResponse()
     {
+        CreateMap<Expense, ResponseExpenseJson>()
+            .ForMember(dest => dest.Tags, config => 
+                config.MapFrom(source => source.Tags.Select(tag => tag.Value)));
+        // A nossa response é uma lista de enuns e a expense é uma lista e entidades
+        // Assim a gente mapeia o valor que esta dentro da entidade para a response.
+
         CreateMap<Expense, ResponseRegisteredExpenseJson>();
         CreateMap<Expense, ResponseShortExpenseJson>();
-        CreateMap<Expense, ResponseExpenseJson>();
         CreateMap<User, ResponseUserProfileJson>();
     }
 }

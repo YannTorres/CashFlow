@@ -15,7 +15,8 @@ public class RequestExpenseJsonBuilder
             Date = faker.Date.Past(),
             PaymentType = faker.PickRandom<PaymentType>(),
             Description = faker.Commerce.ProductDescription(),
-            Amount = faker.Random.Decimal(min: 1, max: 10000)
+            Amount = faker.Random.Decimal(min: 1, max: 10000),
+            Tags = faker.Make(1, () => faker.PickRandom<Tag>())
         };
 
         /* new Faker<RequestRegisterExpenseJson>()
