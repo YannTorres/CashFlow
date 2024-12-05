@@ -6,6 +6,8 @@ A arquitetura da **API** baseia-se em **REST**, utilizando métodos **HTTP** pad
 
 Dentre os pacotes NuGet utilizados, o **AutoMapper** é o responsável pelo mapeamento entre objetos de domínio e requisição/resposta, reduzindo a necessidade de código repetitivo e manual. O **FluentAssertions** é utilizado nos testes de unidade para tornar as verificações mais legíveis, ajudando a escrever testes claros e compreensíveis. Para as validações, o **FluentValidation** é usado para implementar regras de validação de forma simples e intuitiva nas classes de requisições, mantendo o código limpo e fácil de manter. Por fim, o **EntityFramework** atua como um ORM (Object-Relational Mapper) que simplifica as interações com o banco de dados, permitindo o uso de objetos .NET para manipular dados diretamente, sem a necessidade de lidar com consultas SQL.
 
+Para autenticação de usuários foi usado o JWT que é uma maneira eficiente e segura de controlar o acesso a uma aplicação. Os tokens JWT são gerados no servidor e enviados ao cliente após uma autenticação bem-sucedida. O cliente armazena o token e o inclui em cada requisição subsequente, permitindo que o servidor valide a identidade do usuário sem a necessidade de manter sessões no lado do servidor.
+
 <!--![](images/heroimage.png)-->
 
 ### Features
@@ -13,7 +15,7 @@ Dentre os pacotes NuGet utilizados, o **AutoMapper** é o responsável pelo mape
 - **Domain-Driven Design (DDD)**: Estrutura modular que facilita o entendimento e a manutenção do domínio da aplicação.
 - **Autenticação de usuários**: Autenticação utilizando o JWToken.
 - **Testes de Unidade**: Testes abrangentes com FluentAssertions para garantir a funcionalidade e a qualidade.
-- **Testes de Integração**: Garantindo que diferentes componentes do sistema funcionem harmoniosamente, assegurando a qualidade e a confiabilidade da aplicação."
+- **Testes de Integração**: Garantindo que diferentes componentes do sistema funcionem harmoniosamente, assegurando a qualidade e a confiabilidade da aplicação.
 - **Geração de Relatórios**: Capacidade de exportar relatórios detalhados para **PDF e Excel**, oferecendo uma análise visual e eficaz das despesas.
 - **RESTful API com Documentação Swagger**: Interface documentada que facilita a integração e o teste por parte dos desenvolvedores.
 
